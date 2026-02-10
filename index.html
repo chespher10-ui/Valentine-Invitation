@@ -113,16 +113,37 @@ button{
   to{left:380px;}
 }
 
-/* Fireworks */
-.firework{
-  position:absolute;
-  font-size:14px;
-  animation:boom 0.8s steps(4) forwards;
+/* ✨ LOOPING FIREWORKS ON YES */
+document.getElementById("yes").onclick = ()=>{
+  document.getElementById("final").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("message").textContent =
+    "Yay! You just made my day! 💖";
+
+  if(!fireworksLoop){
+    fireworksLoop = setInterval(fireworks, 400);
+  }
+};
+
+document.getElementById("no").onclick = ()=>{
+  document.getElementById("final").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("message").textContent =
+    "It’s okay! You’re still awesome! 😊";
+};
+
+function fireworks(){
+  for(let i=0;i<6;i++){
+    const f = document.createElement("div");
+    f.className = "firework";
+    f.textContent = "✨";
+    f.style.left = Math.random()*300 + "px";
+    f.style.top = Math.random()*200 + "px";
+    screen.appendChild(f);
+    setTimeout(()=>f.remove(),800);
+  }
 }
-@keyframes boom{
-  from{transform:scale(0.3); opacity:1;}
-  to{transform:scale(2); opacity:0;}
-}
+</script>
 
 /* No button run away */
 #no{
@@ -274,3 +295,4 @@ function fireworks(){
 
 </body>
 </html>
+
