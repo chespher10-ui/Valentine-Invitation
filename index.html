@@ -3,184 +3,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine's Pixel Game</title>
-<style>
-  /* General styling */
-  body {
-    font-family: 'Press Start 2P', cursive, monospace;
-    background-color: #b0f2b6;
-    color: #0a2f0a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-
-  /* Game container */
-  #game {
-    width: 320px;
-    padding: 20px;
-    border: 8px solid #0a2f0a;
-    background-color: #c6f2c6;
-    box-shadow: 4px 4px 0 #0a2f0a;
-    text-align: center;
-  }
-
-  /* Buttons */
-  button {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 12px;
-    padding: 10px 20px;
-    margin: 5px;
-    border: 3px solid #0a2f0a;
-    background-color: #a5e3a5;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  button:hover {
-    background-color: #8fdc8f;
-  }
-
-  .emoji-button {
-    font-size: 24px;
-  }
-
-  /* Score display */
-  #score {
-    margin: 10px 0;
-    font-size: 12px;
-  }
-
-  /* Fade animation */
-  .fade {
-    animation: fade 0.5s;
-  }
-
-  @keyframes fade {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-</style>
+<title>Valentine’s Adventure Game 💖</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0; padding:0; background:#d4f2d4; font-family:'Press Start 2P', monospace; display:flex; justify-content:center; align-items:center; height:100vh;
+}
+.screen {
+  width:360px; max-width:90vw; height:500px; background:#b0ffb0; border:8px solid #7fd97f; border-radius:12px; position:relative; overflow:hidden; padding:10px;
+}
+h1, p {
+  margin:8px 0; text-align:center; font-size:12px; color:#004d00;
+}
+button {
+  font-family:'Press Start 2P', monospace; font-size:10px; padding:6px 12px; margin:4px; border-radius:6px; border:none; cursor:pointer;
+}
+.btn-emoji {
+  font-size:20px; width:60px; height:60px; margin:6px; display:inline-flex; justify-content:center; align-items:center; background:#a0ffa0; border-radius:8px; border:2px solid #70d970;
+}
+#score-display {position:absolute; top:5px; left:5px; font-size:10px; color:#004d00;}
+.hidden {display:none;}
+</style>
 </head>
 <body>
+<div class="screen">
+  <div id="instructions">
+    <h1>Valentine’s Adventure! 🎮</h1>
+    <p>Answer fun questions about your favorites to earn points.</p>
+    <p>Reach 100 points to unlock a special question!</p>
+    <button id="startGame">Start Game</button>
+  </div>
 
-<div id="game">
-  <!-- Game content will appear here -->
+  <div id="questionPage" class="hidden">
+    <h1 id="questionText">Question?</h1>
+    <div id="options"></div>
+    <p id="pointsText">Points: 0</p>
+  </div>
+
+  <div id="finalPage" class="hidden">
+    <h1>Will you be my Valentine? ❤️</h1>
+    <button id="yes">Yes 💕</button>
+    <button id="no">No 😢</button>
+  </div>
+
+  <div id="resultPage" class="hidden">
+    <h1 id="resultText"></h1>
+  </div>
+
+  <div id="score-display">Score: 0</div>
 </div>
 
 <script>
-const game = document.getElementById('game');
-
-let score = 0;
-let currentQuestion = 0;
-
-// Questions for the game
+// ===== QUESTIONS =====
 const questions = [
-  {
-    text: "Which chocolate do you like? 🍫 or 🍬",
-    options: ["🍫", "🍬"],
-    answer: "🍫", // set to her actual favorite
-    points: 20
-  },
-  {
-    text: "Favorite drink? ☕ or 🍵",
-    options: ["☕", "🍵"],
-    answer: "🍵",
-    points: 20
-  },
-  {
-    text: "Favorite color? ❤️ or 💜",
-    options: ["❤️", "💜"],
-    answer: "💜",
-    points: 20
-  },
-  {
-    text: "Favorite snack? 🍎 or 🍪",
-    options: ["🍎", "🍪"],
-    answer: "🍪",
-    points: 20
-  },
-  {
-    text: "Favorite animal? 🐶 or 🐱",
-    options: ["🐶", "🐱"],
-    answer: "🐱",
-    points: 20
-  }
+  {q:"Which chocolate do you like?", options:["🍫","🍬"], answer:"🍫"},
+  {q:"Favorite drink?", options:["🍵","🍫"], answer:"🍵"},
+  {q:"Favorite flower?", options:["🌻","🌹"], answer:"🌻"},
+  {q:"Favorite snack?", options:["🍗","🍫"], answer:"🍗"},
+  {q:"Favorite perfume?", options:["💐","👟"], answer:"💐"},
 ];
+let score = 0;
+let currentQ = 0;
 
-// Show instructions
-function showInstructions() {
-  game.innerHTML = `
-    <div class="fade">
-      <h2>Welcome to your Valentine’s Adventure! 🎮</h2>
-      <p>Answer fun questions about your favorites to earn points. Reach 100 points to unlock a special question!</p>
-      <button onclick="nextQuestion()">Start Game</button>
-    </div>
-  `;
-}
+// ===== ELEMENTS =====
+const instructions = document.getElementById("instructions");
+const startBtn = document.getElementById("startGame");
+const questionPage = document.getElementById("questionPage");
+const questionText = document.getElementById("questionText");
+const optionsDiv = document.getElementById("options");
+const pointsText = document.getElementById("pointsText");
+const finalPage = document.getElementById("finalPage");
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+const resultPage = document.getElementById("resultPage");
+const resultText = document.getElementById("resultText");
+const scoreDisplay = document.getElementById("score-display");
 
-// Show a question
-function showQuestion() {
-  const q = questions[currentQuestion];
-  let buttonsHTML = q.options.map(option => `<button class="emoji-button" onclick="choose('${option}')">${option}</button>`).join("");
-  game.innerHTML = `
-    <div class="fade">
-      <p>${q.text}</p>
-      ${buttonsHTML}
-      <div id="score">Points: ${score}</div>
-    </div>
-  `;
-}
+// ===== START GAME =====
+startBtn.onclick = ()=>{
+  instructions.classList.add("hidden");
+  questionPage.classList.remove("hidden");
+  loadQuestion();
+};
 
-// Handle choice
-function choose(option) {
-  const q = questions[currentQuestion];
-  if(option === q.answer){
-    score += q.points;
+// ===== LOAD QUESTION =====
+function loadQuestion(){
+  if(currentQ>=questions.length){
+    // All questions answered or points reached
+    if(score>=100){
+      questionPage.classList.add("hidden");
+      finalPage.classList.remove("hidden");
+    } else {
+      // Loop questions until 100 points
+      currentQ=0;
+      loadQuestion();
+    }
+    return;
   }
-  currentQuestion++;
-  if(currentQuestion < questions.length){
-    showQuestion();
-  } else {
-    showFinal();
-  }
+  const q = questions[currentQ];
+  questionText.textContent = q.q;
+  optionsDiv.innerHTML = "";
+  q.options.forEach(opt=>{
+    const btn = document.createElement("button");
+    btn.className="btn-emoji";
+    btn.textContent=opt;
+    btn.onclick=()=>{
+      if(opt===q.answer) score+=20;
+      pointsText.textContent = "Points: "+score;
+      scoreDisplay.textContent = "Score: "+score;
+      currentQ++;
+      loadQuestion();
+    }
+    optionsDiv.appendChild(btn);
+  });
 }
 
-// Show final Valentine question
-function showFinal() {
-  game.innerHTML = `
-    <div class="fade">
-      <h2>Will you be my Valentine? ❤️</h2>
-      <button onclick="finalAnswer('yes')">Yes</button>
-      <button onclick="finalAnswer('no')">No</button>
-      <div id="score">Total Points: ${score}</div>
-    </div>
-  `;
-}
-
-// Handle final answer
-function finalAnswer(answer) {
-  if(answer === 'yes'){
-    game.innerHTML = `
-      <div class="fade">
-        <h2>Yay! You just made my day! 💖</h2>
-      </div>
-    `;
-  } else {
-    game.innerHTML = `
-      <div class="fade">
-        <h2>It’s okay! You’re still awesome! 😊</h2>
-      </div>
-    `;
-  }
-}
-
-// Start the game
-showInstructions();
+// ===== FINAL YES/NO =====
+yesBtn.onclick = ()=>{
+  finalPage.classList.add("hidden");
+  resultPage.classList.remove("hidden");
+  resultText.textContent = "Yay! You just made my day! 💖";
+};
+noBtn.onclick = ()=>{
+  finalPage.classList.add("hidden");
+  resultPage.classList.remove("hidden");
+  resultText.textContent = "It’s okay! You’re still awesome! 😊";
+};
 </script>
-
 </body>
 </html>
