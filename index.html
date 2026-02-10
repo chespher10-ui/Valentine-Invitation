@@ -3,132 +3,274 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine’s Adventure Game 💖</title>
+<title>Valentine’s Adventure 💖</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
 <style>
-body {
-  margin:0; padding:0; background:#d4f2d4; font-family:'Press Start 2P', monospace; display:flex; justify-content:center; align-items:center; height:100vh;
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#f5eefe;
+  font-family:'Press Start 2P', monospace;
 }
-.screen {
-  width:360px; max-width:90vw; height:500px; background:#b0ffb0; border:8px solid #7fd97f; border-radius:12px; position:relative; overflow:hidden; padding:10px;
+
+.console{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
-h1, p {
-  margin:8px 0; text-align:center; font-size:12px; color:#004d00;
+
+.screen{
+  width:360px;
+  height:520px;
+  background:#eaffea;
+  border:8px solid #a7dca7;
+  border-radius:14px;
+  padding:10px;
+  position:relative;
+  overflow:hidden;
 }
-button {
-  font-family:'Press Start 2P', monospace; font-size:10px; padding:6px 12px; margin:4px; border-radius:6px; border:none; cursor:pointer;
+
+.controls{
+  margin-top:14px;
+  display:flex;
+  gap:30px;
 }
-.btn-emoji {
-  font-size:20px; width:60px; height:60px; margin:6px; display:inline-flex; justify-content:center; align-items:center; background:#a0ffa0; border-radius:8px; border:2px solid #70d970;
+
+.control-btn{
+  width:60px;
+  height:18px;
+  background:#b7b7b7;
+  border-radius:20px;
+  font-size:8px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  box-shadow: inset 0 -2px 0 #888;
 }
-#score-display {position:absolute; top:5px; left:5px; font-size:10px; color:#004d00;}
-.hidden {display:none;}
+
+h1,p{
+  font-size:11px;
+  text-align:center;
+  color:#2f5f2f;
+}
+
+button{
+  font-family:'Press Start 2P', monospace;
+  font-size:10px;
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  background:#c8facc;
+  cursor:pointer;
+}
+
+.btn-emoji{
+  width:60px;
+  height:60px;
+  font-size:22px;
+  margin:6px;
+  background:#d6ffd6;
+  border:3px solid #9fd89f;
+}
+
+.hidden{display:none;}
+
+#score{
+  position:absolute;
+  top:6px;
+  left:6px;
+  font-size:9px;
+}
+
+/* Floating hearts */
+.heart{
+  position:absolute;
+  font-size:14px;
+  animation:floatUp 3s steps(6) infinite;
+  pointer-events:none;
+}
+@keyframes floatUp{
+  from{transform:translateY(40px); opacity:0;}
+  50%{opacity:1;}
+  to{transform:translateY(-120px); opacity:0;}
+}
+
+/* Cat */
+.cat{
+  position:absolute;
+  bottom:10px;
+  font-size:18px;
+  animation:catWalk 8s steps(8) infinite;
+}
+@keyframes catWalk{
+  from{left:-30px;}
+  to{left:380px;}
+}
+
+/* Fireworks */
+.firework{
+  position:absolute;
+  font-size:14px;
+  animation:boom 0.8s steps(4) forwards;
+}
+@keyframes boom{
+  from{transform:scale(0.3); opacity:1;}
+  to{transform:scale(2); opacity:0;}
+}
+
+/* No button run away */
+#no{
+  position:relative;
+  transition:transform 0.3s ease;
+}
 </style>
 </head>
+
 <body>
-<div class="screen">
-  <div id="instructions">
-    <h1>Valentine’s Adventure! 🎮</h1>
-    <p>Answer fun questions about your favorites to earn points.</p>
-    <p>Reach 100 points to unlock a special question!</p>
-    <button id="startGame">Start Game</button>
+
+<div class="console">
+  <div class="screen">
+    <div id="score">Score: 0</div>
+
+    <audio id="bgm" src="valentine.mp3" loop></audio>
+
+    <div id="instructions">
+      <h1>Valentine’s Adventure 🎮</h1>
+      <p>Answer fun questions about your favorites.</p>
+      <p>Reach 100 points to unlock a special question!</p>
+      <p>(Press START)</p>
+    </div>
+
+    <div id="game" class="hidden">
+      <h1 id="question"></h1>
+      <div id="choices"></div>
+      <p id="points">Points: 0</p>
+    </div>
+
+    <div id="final" class="hidden">
+      <h1>Will you be my Valentine? ❤️</h1>
+      <button id="yes">Yes 💕</button>
+      <button id="no">No 😊</button>
+    </div>
+
+    <div id="result" class="hidden">
+      <h1 id="message"></h1>
+    </div>
   </div>
 
-  <div id="questionPage" class="hidden">
-    <h1 id="questionText">Question?</h1>
-    <div id="options"></div>
-    <p id="pointsText">Points: 0</p>
+  <!-- 🕹️ Game Boy Buttons -->
+  <div class="controls">
+    <div class="control-btn" id="startBtn">START</div>
+    <div class="control-btn" id="selectBtn">SELECT</div>
   </div>
-
-  <div id="finalPage" class="hidden">
-    <h1>Will you be my Valentine? ❤️</h1>
-    <button id="yes">Yes 💕</button>
-    <button id="no">No 😢</button>
-  </div>
-
-  <div id="resultPage" class="hidden">
-    <h1 id="resultText"></h1>
-  </div>
-
-  <div id="score-display">Score: 0</div>
 </div>
 
 <script>
-// ===== QUESTIONS =====
 const questions = [
-  {q:"Which chocolate do you like?", options:["🍫","🍬"], answer:"🍫"},
-  {q:"Favorite drink?", options:["🍵","🍫"], answer:"🍵"},
-  {q:"Favorite flower?", options:["🌻","🌹"], answer:"🌻"},
-  {q:"Favorite snack?", options:["🍗","🍫"], answer:"🍗"},
-  {q:"Favorite perfume?", options:["💐","👟"], answer:"💐"},
+  {q:"Which chocolate do you like?", o:["🍫","🍬"], a:"🍫"},
+  {q:"Favorite drink?", o:["🍵","🥤"], a:"🍵"},
+  {q:"Favorite flower?", o:["🌻","🌹"], a:"🌻"},
+  {q:"Favorite food?", o:["🍗","🍕"], a:"🍗"},
+  {q:"Pick one!", o:["👟","💐"], a:"💐"}
 ];
-let score = 0;
-let currentQ = 0;
 
-// ===== ELEMENTS =====
-const instructions = document.getElementById("instructions");
-const startBtn = document.getElementById("startGame");
-const questionPage = document.getElementById("questionPage");
-const questionText = document.getElementById("questionText");
-const optionsDiv = document.getElementById("options");
-const pointsText = document.getElementById("pointsText");
-const finalPage = document.getElementById("finalPage");
-const yesBtn = document.getElementById("yes");
-const noBtn = document.getElementById("no");
-const resultPage = document.getElementById("resultPage");
-const resultText = document.getElementById("resultText");
-const scoreDisplay = document.getElementById("score-display");
+let score=0, index=0;
 
-// ===== START GAME =====
-startBtn.onclick = ()=>{
-  instructions.classList.add("hidden");
-  questionPage.classList.remove("hidden");
+const bgm = document.getElementById("bgm");
+const screen = document.querySelector(".screen");
+
+document.getElementById("startBtn").onclick = startGame;
+document.getElementById("selectBtn").onclick = ()=>location.reload();
+
+function startGame(){
+  document.getElementById("instructions").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  bgm.volume=0.4;
+  bgm.play();
   loadQuestion();
-};
+  spawnHearts();
+  spawnCat();
+}
 
-// ===== LOAD QUESTION =====
 function loadQuestion(){
-  if(currentQ>=questions.length){
-    // All questions answered or points reached
-    if(score>=100){
-      questionPage.classList.add("hidden");
-      finalPage.classList.remove("hidden");
-    } else {
-      // Loop questions until 100 points
-      currentQ=0;
-      loadQuestion();
-    }
+  if(score>=100){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("final").classList.remove("hidden");
     return;
   }
-  const q = questions[currentQ];
-  questionText.textContent = q.q;
-  optionsDiv.innerHTML = "";
-  q.options.forEach(opt=>{
-    const btn = document.createElement("button");
-    btn.className="btn-emoji";
-    btn.textContent=opt;
-    btn.onclick=()=>{
-      if(opt===q.answer) score+=20;
-      pointsText.textContent = "Points: "+score;
-      scoreDisplay.textContent = "Score: "+score;
-      currentQ++;
-      loadQuestion();
-    }
-    optionsDiv.appendChild(btn);
+  const q=questions[index%questions.length];
+  document.getElementById("question").textContent=q.q;
+  const c=document.getElementById("choices");
+  c.innerHTML="";
+  q.o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.className="btn-emoji";
+    b.textContent=opt;
+    b.onclick=()=>{
+      if(opt===q.a) score+=20;
+      updateScore();
+      index++;
+      setTimeout(loadQuestion,300);
+    };
+    c.appendChild(b);
   });
 }
 
-// ===== FINAL YES/NO =====
-yesBtn.onclick = ()=>{
-  finalPage.classList.add("hidden");
-  resultPage.classList.remove("hidden");
-  resultText.textContent = "Yay! You just made my day! 💖";
+function updateScore(){
+  document.getElementById("points").textContent="Points: "+score;
+  document.getElementById("score").textContent="Score: "+score;
+}
+
+function spawnHearts(){
+  setInterval(()=>{
+    const h=document.createElement("div");
+    h.className="heart";
+    h.textContent="💗";
+    h.style.left=Math.random()*320+"px";
+    h.style.bottom="0";
+    screen.appendChild(h);
+    setTimeout(()=>h.remove(),3000);
+  },900);
+}
+
+function spawnCat(){
+  const cat=document.createElement("div");
+  cat.className="cat";
+  cat.textContent="😼";
+  screen.appendChild(cat);
+}
+
+document.getElementById("no").onmouseover = ()=>{
+  const x=(Math.random()*80)-40;
+  const y=(Math.random()*40)-20;
+  document.getElementById("no").style.transform=`translate(${x}px,${y}px)`;
 };
-noBtn.onclick = ()=>{
-  finalPage.classList.add("hidden");
-  resultPage.classList.remove("hidden");
-  resultText.textContent = "It’s okay! You’re still awesome! 😊";
+
+document.getElementById("yes").onclick=()=>{
+  document.getElementById("final").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("message").textContent="Yay! You just made my day! 💖";
+  fireworks();
 };
+
+function fireworks(){
+  for(let i=0;i<12;i++){
+    const f=document.createElement("div");
+    f.className="firework";
+    f.textContent="✨";
+    f.style.left=Math.random()*300+"px";
+    f.style.top=Math.random()*200+"px";
+    screen.appendChild(f);
+    setTimeout(()=>f.remove(),800);
+  }
+}
 </script>
+
 </body>
 </html>
