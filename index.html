@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Hershey Nicole 💖</title>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
 <style>
 body {
   font-family: 'Poppins', sans-serif;
@@ -20,7 +19,6 @@ body {
   position: relative;
   transition: background 0.5s ease;
 }
-
 .card {
   background: rgba(20,0,40,0.85);
   padding: 30px;
@@ -31,7 +29,6 @@ body {
   max-width: 380px;
   z-index: 2;
 }
-
 h1 {
   font-family: 'Great Vibes', cursive;
   font-size: 32px;
@@ -39,10 +36,8 @@ h1 {
   text-shadow: 0 0 20px #ff5d9e, 0 0 40px #ff4d6d;
   margin-bottom: 10px;
 }
-
 p { font-size: 18px; margin: 6px 0; color: #ffd6f2; }
 em { font-style: normal; color: #ffb6d2; }
-
 button {
   padding: 14px 28px;
   margin: 12px;
@@ -53,18 +48,15 @@ button {
   transition: transform 0.2s ease, box-shadow 0.3s ease;
   font-weight: 600;
 }
-
 #yes {
   background: #ff4d6d;
   color: white;
   box-shadow: 0 0 20px #ff4d6d, 0 0 40px #ff5d9e;
 }
-
 #yes:hover {
   box-shadow: 0 0 35px #ff5d9e, 0 0 60px #ff4d6d;
   transform: scale(1.05);
 }
-
 #no {
   background: #555;
   color: #fff;
@@ -72,6 +64,7 @@ button {
   box-shadow: 0 0 15px #ff5d9e;
 }
 
+/* floating hearts */
 .heart {
   position: absolute;
   bottom: -20px;
@@ -80,12 +73,12 @@ button {
   opacity: 0.8;
   text-shadow: 0 0 10px #ff5d9e;
 }
-
 @keyframes floatUp {
   0% { transform: translateY(0) scale(1); opacity: 0.8; }
   100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
 }
 
+/* floating rose petals */
 .petal {
   position: absolute;
   top: -10px;
@@ -93,12 +86,12 @@ button {
   animation: fall 6s linear infinite;
   opacity: 0.8;
 }
-
 @keyframes fall {
   0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
   100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
 }
 
+/* particles */
 .particle {
   position: absolute;
   width: 6px;
@@ -109,12 +102,12 @@ button {
   opacity: 0.8;
   animation: sparkle 1.2s forwards;
 }
-
 @keyframes sparkle {
   0% { transform: translate(0,0) scale(1); opacity: 1; }
   100% { transform: translate(calc(-50px + 100px*var(--randX)), calc(-50px + 100px*var(--randY))) scale(0.2); opacity: 0; }
 }
 
+/* screen shake */
 @keyframes shake {
   0% { transform: translate(0,0); }
   25% { transform: translate(-6px,0); }
@@ -124,25 +117,38 @@ button {
 }
 .shake { animation: shake 0.35s; }
 
+/* fireworks hearts */
 .firework {
   position: absolute;
   font-size: 24px;
   animation: firework 1.5s forwards;
 }
-
 @keyframes firework {
   0% { transform: scale(0) rotate(0deg); opacity: 1; }
   100% { transform: scale(2) rotate(360deg); opacity: 0; }
 }
 
-@media (max-width: 500px) {
-  h1 { font-size: 28px; }
-  p { font-size: 16px; }
-  button { padding: 12px 22px; font-size: 15px; }
+/* cats GIF */
+.cat {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 1;
+  animation: floatCat linear forwards;
+}
+@keyframes floatCat {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+}
+
+@media (max-width:500px){
+  h1 { font-size:28px; }
+  p { font-size:16px; }
+  button { padding:12px 22px; font-size:15px; }
 }
 </style>
 </head>
-
 <body>
 <div class="card">
   <h1>Hershey Nicole 💖</h1>
@@ -170,7 +176,6 @@ const celebrate = document.getElementById("celebrationSound");
 const congrats = document.getElementById("congratsSound");
 let noClicks = 0;
 let musicStarted = false;
-
 const messages = [
   "Are you sure? 🥺",
   "Really sure?? 😳",
@@ -181,7 +186,7 @@ const messages = [
   "Say yes already 😈"
 ];
 
-// Floating hearts
+// floating hearts
 function createHeart() {
   const heart = document.createElement("div");
   heart.className = "heart";
@@ -194,7 +199,7 @@ function createHeart() {
 }
 setInterval(createHeart, 600);
 
-// Falling petals
+// falling petals
 function createPetal() {
   const petal = document.createElement("div");
   petal.className = "petal";
@@ -207,7 +212,25 @@ function createPetal() {
 }
 setInterval(createPetal, 500);
 
-// Particles
+// floating cat GIFs
+const catGifs = [
+  "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
+  "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
+  "https://media.giphy.com/media/13borq7Zo2kulO/giphy.gif"
+];
+function createCat(){
+  const cat = document.createElement("img");
+  cat.src = catGifs[Math.floor(Math.random()*catGifs.length)];
+  cat.className = "cat";
+  cat.style.left = Math.random()*100 + "vw";
+  cat.style.top = "100vh";
+  cat.style.animationDuration = (8 + Math.random()*4) + "s";
+  document.body.appendChild(cat);
+  setTimeout(()=>cat.remove(),12000);
+}
+setInterval(createCat,2000);
+
+// particles
 function createParticles(x,y){
   for(let i=0;i<12;i++){
     const p = document.createElement("div");
@@ -221,7 +244,7 @@ function createParticles(x,y){
   }
 }
 
-// Fireworks hearts
+// fireworks hearts
 function createFirework() {
   for(let i=0;i<15;i++){
     const f = document.createElement("div");
@@ -268,10 +291,9 @@ yesBtn.onclick = () => {
 
   const rect = yesBtn.getBoundingClientRect();
   createParticles(rect.left + rect.width/2, rect.top + rect.height/2);
-
-  // Animate fireworks hearts
   createFirework();
 
+  // show message screen
   document.body.innerHTML = `
     <div style="
       display:flex;
@@ -293,7 +315,10 @@ yesBtn.onclick = () => {
     </div>
   `;
 
-  // Pulsing background
+  // continuous fireworks and cats on screen
+  setInterval(()=>{createFirework(); createCat();}, 1000);
+
+  // pulsing background
   const pulseDiv = document.querySelector('div');
   let pulse = 0;
   setInterval(() => {
