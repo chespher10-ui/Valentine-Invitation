@@ -7,21 +7,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* ===== BODY ===== */
 body {
   font-family: 'Poppins', sans-serif;
   background: radial-gradient(circle at bottom, #1a1a1a, #2c003e);
   height: 100vh;
   margin: 0;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
   color: #fff;
   position: relative;
+  transition: background 0.5s ease;
 }
 
-/* ===== CARD ===== */
 .card {
   background: rgba(20,0,40,0.85);
   padding: 30px;
@@ -37,22 +36,13 @@ h1 {
   font-family: 'Great Vibes', cursive;
   font-size: 32px;
   color: #ff5d9e;
-  text-shadow: 0 0 15px #ff5d9e;
+  text-shadow: 0 0 20px #ff5d9e, 0 0 40px #ff4d6d;
   margin-bottom: 10px;
 }
 
-p {
-  font-size: 18px;
-  margin: 6px 0;
-  color: #ffd6f2;
-}
+p { font-size: 18px; margin: 6px 0; color: #ffd6f2; }
+em { font-style: normal; color: #ffb6d2; }
 
-em {
-  font-style: normal;
-  color: #ffb6d2;
-}
-
-/* ===== BUTTONS ===== */
 button {
   padding: 14px 28px;
   margin: 12px;
@@ -67,11 +57,11 @@ button {
 #yes {
   background: #ff4d6d;
   color: white;
-  box-shadow: 0 0 20px #ff4d6d;
+  box-shadow: 0 0 20px #ff4d6d, 0 0 40px #ff5d9e;
 }
 
 #yes:hover {
-  box-shadow: 0 0 35px #ff4d6d;
+  box-shadow: 0 0 35px #ff5d9e, 0 0 60px #ff4d6d;
   transform: scale(1.05);
 }
 
@@ -82,7 +72,6 @@ button {
   box-shadow: 0 0 15px #ff5d9e;
 }
 
-/* ===== FLOATING ROSE HEARTS ===== */
 .heart {
   position: absolute;
   bottom: -20px;
@@ -97,17 +86,19 @@ button {
   100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
 }
 
-/* ===== SCREEN SHAKE ===== */
-@keyframes shake {
-  0% { transform: translate(0,0); }
-  25% { transform: translate(-6px,0); }
-  50% { transform: translate(6px,0); }
-  75% { transform: translate(-6px,0); }
-  100% { transform: translate(0,0); }
+.petal {
+  position: absolute;
+  top: -10px;
+  font-size: 20px;
+  animation: fall 6s linear infinite;
+  opacity: 0.8;
 }
-.shake { animation: shake 0.35s; }
 
-/* ===== PARTICLE SPARKLES ===== */
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
 .particle {
   position: absolute;
   width: 6px;
@@ -124,7 +115,26 @@ button {
   100% { transform: translate(calc(-50px + 100px*var(--randX)), calc(-50px + 100px*var(--randY))) scale(0.2); opacity: 0; }
 }
 
-/* ===== MOBILE ADJUSTMENTS ===== */
+@keyframes shake {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(-6px,0); }
+  50% { transform: translate(6px,0); }
+  75% { transform: translate(-6px,0); }
+  100% { transform: translate(0,0); }
+}
+.shake { animation: shake 0.35s; }
+
+.firework {
+  position: absolute;
+  font-size: 24px;
+  animation: firework 1.5s forwards;
+}
+
+@keyframes firework {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(2) rotate(360deg); opacity: 0; }
+}
+
 @media (max-width: 500px) {
   h1 { font-size: 28px; }
   p { font-size: 16px; }
@@ -142,14 +152,14 @@ button {
   <button id="no">No 😢</button>
 </div>
 
-<!-- 🎵 Background music -->
 <audio id="bgMusic" loop>
   <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
 </audio>
-
-<!-- 🔔 Celebration sound -->
 <audio id="celebrationSound">
   <source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg">
+</audio>
+<audio id="congratsSound">
+  <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -157,7 +167,7 @@ const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
 const music = document.getElementById("bgMusic");
 const celebrate = document.getElementById("celebrationSound");
-
+const congrats = document.getElementById("congratsSound");
 let noClicks = 0;
 let musicStarted = false;
 
@@ -171,22 +181,35 @@ const messages = [
   "Say yes already 😈"
 ];
 
-// Floating rose hearts
+// Floating hearts
 function createHeart() {
   const heart = document.createElement("div");
   heart.className = "heart";
   heart.innerText = "🌹";
   heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = (4 + Math.random() * 3) + "s";
-  heart.style.fontSize = (16 + Math.random() * 20) + "px";
+  heart.style.animationDuration = (4 + Math.random()*3) + "s";
+  heart.style.fontSize = (16 + Math.random()*20) + "px";
   document.body.appendChild(heart);
   setTimeout(() => heart.remove(), 7000);
 }
 setInterval(createHeart, 600);
 
-// Particle sparkles
+// Falling petals
+function createPetal() {
+  const petal = document.createElement("div");
+  petal.className = "petal";
+  petal.innerText = "🌹";
+  petal.style.left = Math.random()*100 + "vw";
+  petal.style.fontSize = (14 + Math.random()*16) + "px";
+  petal.style.animationDuration = (5 + Math.random()*4) + "s";
+  document.body.appendChild(petal);
+  setTimeout(()=>petal.remove(),9000);
+}
+setInterval(createPetal, 500);
+
+// Particles
 function createParticles(x,y){
-  for(let i=0;i<8;i++){
+  for(let i=0;i<12;i++){
     const p = document.createElement("div");
     p.className = "particle";
     p.style.left = x + "px";
@@ -198,12 +221,26 @@ function createParticles(x,y){
   }
 }
 
+// Fireworks hearts
+function createFirework() {
+  for(let i=0;i<15;i++){
+    const f = document.createElement("div");
+    f.className = "firework";
+    f.innerText = "💖";
+    f.style.left = Math.random()*100 + "vw";
+    f.style.top = Math.random()*60 + "vh";
+    f.style.fontSize = (16 + Math.random()*24) + "px";
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),1500);
+  }
+}
+
+// NO BUTTON
 noBtn.addEventListener("click", () => {
   noClicks++;
   if(!musicStarted){ music.play(); musicStarted=true; }
 
   noBtn.innerText = messages[Math.min(noClicks, messages.length-1)];
-
   const scale = 1 + noClicks * 0.18;
   noBtn.style.transform = `scale(${scale})`;
 
@@ -223,11 +260,17 @@ noBtn.addEventListener("click", () => {
   }
 });
 
+// YES BUTTON
 yesBtn.onclick = () => {
-  music.play();
-  celebrate.play(); // Celebration sound
+  if(!musicStarted){ music.play(); musicStarted=true; }
+  celebrate.play();
+  congrats.play();
+
   const rect = yesBtn.getBoundingClientRect();
   createParticles(rect.left + rect.width/2, rect.top + rect.height/2);
+
+  // Animate fireworks hearts
+  createFirework();
 
   document.body.innerHTML = `
     <div style="
@@ -240,14 +283,23 @@ yesBtn.onclick = () => {
       color:#ffb6d2;
       font-family:'Great Vibes', cursive;
       padding:20px;
+      animation: pulse 2s infinite alternate;
     ">
-      <h1 style="font-size:32px; text-shadow:0 0 20px #ff5d9e;">
-        Yay!! 💖<br>
+      <h1 style="font-size:36px; text-shadow:0 0 25px #ff5d9e,0 0 50px #ff4d6d;">
+        💖 Congratulations!! 💖<br>
         I love you endlessly,<br>
         Hershey Nicole 💕
       </h1>
     </div>
   `;
+
+  // Pulsing background
+  const pulseDiv = document.querySelector('div');
+  let pulse = 0;
+  setInterval(() => {
+    pulse += 0.05;
+    pulseDiv.style.background = `radial-gradient(circle at bottom, rgba(44,0,62,${0.8+0.1*Math.sin(pulse)}), rgba(26,0,26,${0.8+0.1*Math.sin(pulse)}))`;
+  },50);
 };
 </script>
 </body>
