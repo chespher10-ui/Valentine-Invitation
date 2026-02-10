@@ -14,8 +14,14 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  background:#f6efff;
+  background:#f5eefe;
   font-family:'Press Start 2P', monospace;
+}
+
+.console{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 
 .screen{
@@ -29,7 +35,25 @@ body{
   overflow:hidden;
 }
 
-/* TEXT */
+.controls{
+  margin-top:14px;
+  display:flex;
+  gap:30px;
+}
+
+.control-btn{
+  width:60px;
+  height:18px;
+  background:#b7b7b7;
+  border-radius:20px;
+  font-size:8px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  box-shadow: inset 0 -2px 0 #888;
+}
+
 h1,p{
   font-size:11px;
   text-align:center;
@@ -64,89 +88,86 @@ button{
   font-size:9px;
 }
 
-/* 💗 FLOATING HEARTS */
+/* Floating hearts */
 .heart{
   position:absolute;
   font-size:14px;
   animation:floatUp 3s steps(6) infinite;
   pointer-events:none;
 }
-
 @keyframes floatUp{
   from{transform:translateY(40px); opacity:0;}
   50%{opacity:1;}
   to{transform:translateY(-120px); opacity:0;}
 }
 
-/* 🌸 CORRECT ANSWER POP */
-.correct{
-  animation:pop 0.4s steps(3);
-}
-@keyframes pop{
-  from{transform:scale(1);}
-  to{transform:scale(1.3);}
-}
-
-/* 😼 PIXEL CAT WALK */
+/* Cat */
 .cat{
   position:absolute;
-  bottom:20px;
+  bottom:10px;
   font-size:18px;
-  animation:catWalk 8s steps(12) infinite;
+  animation:catWalk 8s steps(8) infinite;
 }
-
 @keyframes catWalk{
-  from{left:-40px;}
-  to{left:360px;}
+  from{left:-30px;}
+  to{left:380px;}
 }
 
-/* ✨ FIREWORKS */
+/* Fireworks */
 .firework{
   position:absolute;
-  font-size:20px;
-  animation:boom 1.2s steps(4) infinite;
+  font-size:14px;
+  animation:boom 0.8s steps(4) forwards;
+}
+@keyframes boom{
+  from{transform:scale(0.3); opacity:1;}
+  to{transform:scale(2); opacity:0;}
 }
 
-@keyframes boom{
-  0%{transform:scale(0); opacity:0;}
-  50%{transform:scale(1.5); opacity:1;}
-  100%{transform:scale(2); opacity:0;}
+/* No button run away */
+#no{
+  position:relative;
+  transition:transform 0.3s ease;
 }
 </style>
 </head>
 
 <body>
 
-<div class="screen">
-  <div id="score">Score: 0</div>
+<div class="console">
+  <div class="screen">
+    <div id="score">Score: 0</div>
 
-  <!-- 🎵 Background music -->
-  <audio id="bgm" src="valentine.mp3" loop></audio>
+    <audio id="bgm" src="valentine.mp3" loop></audio>
 
-  <!-- 😼 Pixel cat -->
-  <div class="cat">😼</div>
+    <div id="instructions">
+      <h1>Valentine’s Adventure 🎮</h1>
+      <p>Answer fun questions about your favorites.</p>
+      <p>Reach 100 points to unlock a special question!</p>
+      <p>(Press START)</p>
+    </div>
 
-  <div id="instructions">
-    <h1>Valentine’s Adventure 🎮</h1>
-    <p>Answer fun questions about your favorites.</p>
-    <p>Reach 100 points to unlock a special question!</p>
-    <button id="start">Start Game</button>
+    <div id="game" class="hidden">
+      <h1 id="question"></h1>
+      <div id="choices"></div>
+      <p id="points">Points: 0</p>
+    </div>
+
+    <div id="final" class="hidden">
+      <h1>Will you be my Valentine? ❤️</h1>
+      <button id="yes">Yes 💕</button>
+      <button id="no">No 😊</button>
+    </div>
+
+    <div id="result" class="hidden">
+      <h1 id="message"></h1>
+    </div>
   </div>
 
-  <div id="game" class="hidden">
-    <h1 id="question"></h1>
-    <div id="choices"></div>
-    <p id="points">Points: 0</p>
-  </div>
-
-  <div id="final" class="hidden">
-    <h1>Will you be my Valentine? ❤️</h1>
-    <button id="yes">Yes 💕</button>
-    <button id="no">No 😊</button>
-  </div>
-
-  <div id="result" class="hidden">
-    <h1 id="message"></h1>
+  <!-- 🕹️ Game Boy Buttons -->
+  <div class="controls">
+    <div class="control-btn" id="startBtn">START</div>
+    <div class="control-btn" id="selectBtn">SELECT</div>
   </div>
 </div>
 
@@ -159,95 +180,96 @@ const questions = [
   {q:"Pick one!", o:["👟","💐"], a:"💐"}
 ];
 
-let score = 0;
-let index = 0;
+let score=0, index=0;
 
 const bgm = document.getElementById("bgm");
-const startBtn = document.getElementById("start");
-const game = document.getElementById("game");
-const instructions = document.getElementById("instructions");
-const questionEl = document.getElementById("question");
-const choicesEl = document.getElementById("choices");
-const pointsEl = document.getElementById("points");
-const scoreEl = document.getElementById("score");
+const screen = document.querySelector(".screen");
 
-startBtn.onclick = ()=>{
-  instructions.classList.add("hidden");
-  game.classList.remove("hidden");
-  bgm.volume = 0.4;
+document.getElementById("startBtn").onclick = startGame;
+document.getElementById("selectBtn").onclick = ()=>location.reload();
+
+function startGame(){
+  document.getElementById("instructions").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  bgm.volume=0.4;
   bgm.play();
   loadQuestion();
   spawnHearts();
-};
+  spawnCat();
+}
 
 function loadQuestion(){
-  if(score >= 100){
-    game.classList.add("hidden");
+  if(score>=100){
+    document.getElementById("game").classList.add("hidden");
     document.getElementById("final").classList.remove("hidden");
     return;
   }
-
-  const q = questions[index % questions.length];
-  questionEl.textContent = q.q;
-  choicesEl.innerHTML = "";
-
+  const q=questions[index%questions.length];
+  document.getElementById("question").textContent=q.q;
+  const c=document.getElementById("choices");
+  c.innerHTML="";
   q.o.forEach(opt=>{
-    const b = document.createElement("button");
+    const b=document.createElement("button");
     b.className="btn-emoji";
     b.textContent=opt;
     b.onclick=()=>{
-      if(opt === q.a){
-        score += 20;
-        b.classList.add("correct");
-      }
+      if(opt===q.a) score+=20;
       updateScore();
       index++;
-      setTimeout(loadQuestion,400);
+      setTimeout(loadQuestion,300);
     };
-    choicesEl.appendChild(b);
+    c.appendChild(b);
   });
 }
 
 function updateScore(){
-  pointsEl.textContent = "Points: "+score;
-  scoreEl.textContent = "Score: "+score;
+  document.getElementById("points").textContent="Points: "+score;
+  document.getElementById("score").textContent="Score: "+score;
 }
 
-/* 💗 Hearts */
 function spawnHearts(){
   setInterval(()=>{
-    const h = document.createElement("div");
+    const h=document.createElement("div");
     h.className="heart";
     h.textContent="💗";
-    h.style.left = Math.random()*300+"px";
-    h.style.bottom="0px";
-    document.querySelector(".screen").appendChild(h);
+    h.style.left=Math.random()*320+"px";
+    h.style.bottom="0";
+    screen.appendChild(h);
     setTimeout(()=>h.remove(),3000);
   },900);
 }
 
-/* ✨ Fireworks on YES */
+function spawnCat(){
+  const cat=document.createElement("div");
+  cat.className="cat";
+  cat.textContent="😼";
+  screen.appendChild(cat);
+}
+
+document.getElementById("no").onmouseover = ()=>{
+  const x=(Math.random()*80)-40;
+  const y=(Math.random()*40)-20;
+  document.getElementById("no").style.transform=`translate(${x}px,${y}px)`;
+};
+
 document.getElementById("yes").onclick=()=>{
   document.getElementById("final").classList.add("hidden");
   document.getElementById("result").classList.remove("hidden");
   document.getElementById("message").textContent="Yay! You just made my day! 💖";
+  fireworks();
+};
 
-  setInterval(()=>{
-    const f = document.createElement("div");
+function fireworks(){
+  for(let i=0;i<12;i++){
+    const f=document.createElement("div");
     f.className="firework";
     f.textContent="✨";
     f.style.left=Math.random()*300+"px";
     f.style.top=Math.random()*200+"px";
-    document.querySelector(".screen").appendChild(f);
-    setTimeout(()=>f.remove(),1200);
-  },300);
-};
-
-document.getElementById("no").onclick=()=>{
-  document.getElementById("final").classList.add("hidden");
-  document.getElementById("result").classList.remove("hidden");
-  document.getElementById("message").textContent="It’s okay! You’re still awesome! 😊";
-};
+    screen.appendChild(f);
+    setTimeout(()=>f.remove(),800);
+  }
+}
 </script>
 
 </body>
