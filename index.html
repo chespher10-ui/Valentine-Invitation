@@ -6,79 +6,40 @@
 <title>Hershey Nicole's Valentine Adventure 💖</title>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* ===== BODY ===== */
 body {
-  margin:0;
-  padding:0;
-  overflow:hidden;
+  margin:0; padding:0; overflow:hidden;
   font-family:'Poppins', sans-serif;
   background: radial-gradient(circle at bottom, #1a1a1a, #2c003e);
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+  color:white; display:flex; justify-content:center; align-items:center; height:100vh;
 }
 
-/* ===== CARD / GAME UI ===== */
-.card {
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
-  background: rgba(20,0,40,0.9);
-  border-radius:25px;
-  padding:30px;
-  text-align:center;
-  box-shadow:0 15px 40px rgba(255,0,128,0.4);
-  z-index:2;
-  width:90%;
-  max-width:380px;
-}
-
-h1{
-  font-family:'Great Vibes', cursive;
-  font-size:32px;
-  color:#ff5d9e;
-  text-shadow:0 0 20px #ff5d9e,0 0 40px #ff4d6d;
-  margin-bottom:10px;
-}
+/* CARD UI */
+.card { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);
+  background: rgba(20,0,40,0.9); border-radius:25px; padding:30px;
+  text-align:center; box-shadow:0 15px 40px rgba(255,0,128,0.4); z-index:2; width:90%; max-width:380px; }
+h1{ font-family:'Great Vibes', cursive; font-size:32px; color:#ff5d9e;
+  text-shadow:0 0 20px #ff5d9e,0 0 40px #ff4d6d; margin-bottom:10px; }
 p{ font-size:18px; margin:6px 0; color:#ffd6f2; }
 em{ font-style:normal; color:#ffb6d2; }
-
-button{
-  padding:14px 28px;
-  margin:12px;
-  border:none;
-  border-radius:40px;
-  font-size:16px;
-  cursor:pointer;
-  font-weight:600;
-  transition:transform 0.2s ease, box-shadow 0.3s ease;
-}
+button{ padding:14px 28px; margin:12px; border:none; border-radius:40px;
+  font-size:16px; cursor:pointer; font-weight:600; transition:transform 0.2s ease, box-shadow 0.3s ease;}
 #yes{background:#ff4d6d; color:white; box-shadow:0 0 20px #ff4d6d,0 0 40px #ff5d9e;}
 #yes:hover{transform:scale(1.05); box-shadow:0 0 35px #ff5d9e,0 0 60px #ff4d6d;}
 #no{background:#555;color:white;position:absolute; box-shadow:0 0 15px #ff5d9e; cursor:pointer;}
 
-/* ===== FLOATING OBJECTS ===== */
-.heart,.petal,.cat,.firework{
-  position:absolute;
-  pointer-events:none;
-  user-select:none;
-}
-
+/* FLOATING OBJECTS */
+.heart,.petal,.cat,.firework,.favorite{ position:absolute; pointer-events:none; user-select:none; }
 .heart{ font-size:22px; text-shadow:0 0 10px #ff5d9e; animation:floatUp 6s linear infinite; }
-@keyframes floatUp{0%{transform:translateY(0) scale(1); opacity:0.8;}100%{transform:translateY(-110vh) scale(1.5); opacity:0;}}
-
+@keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:0.8;}100%{transform:translateY(-110vh) scale(1.5);opacity:0;}}
 .petal{ font-size:20px; animation:fall 6s linear infinite; opacity:0.8;}
 @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:0.8;}100%{transform:translateY(110vh) rotate(360deg);opacity:0;}}
-
 .cat{width:60px;height:60px;}
 .firework{font-size:24px; animation:firework 1.5s forwards;}
-@keyframes firework{0%{transform:scale(0) rotate(0deg); opacity:1;}100%{transform:scale(2) rotate(360deg); opacity:0;}}
+@keyframes firework{0%{transform:scale(0) rotate(0deg);opacity:1;}100%{transform:scale(2) rotate(360deg);opacity:0;}}
+.favorite{font-size:28px; animation:floatUp 8s linear infinite;}
 
+/* RESPONSIVE */
 @media (max-width:500px){ h1{font-size:28px;} p{font-size:16px;} button{padding:12px 22px;font-size:15px;} }
-
 </style>
 </head>
 <body>
@@ -89,49 +50,55 @@ button{
   <button id="yes">Yes 💕</button>
   <button id="no">No 😢</button>
   <p>Score: <span id="score">0</span></p>
+  <!-- Embedded YouTube Player Auto-Play -->
+  <iframe id="valentineSong" width="0" height="0"
+    src="https://www.youtube.com/embed/kGDRoPlSbwA?autoplay=1&mute=0&loop=1&playlist=kGDRoPlSbwA"
+    title="Laufey Valentine" frameborder="0"
+    allow="autoplay; encrypted-media" allowfullscreen>
+  </iframe>
 </div>
 
-<!-- AUDIO -->
-<audio id="bgMusic" loop>
-  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
-</audio>
-<audio id="celebrationSound">
-  <source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg">
-</audio>
-<audio id="congratsSound">
-  <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
-</audio>
+<!-- Audio effects -->
+<audio id="celebrationSound"><source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg"></audio>
+<audio id="congratsSound"><source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg"></audio>
 
 <script>
-// ===== ELEMENTS =====
-const noBtn = document.getElementById("no");
-const yesBtn = document.getElementById("yes");
-const scoreEl = document.getElementById("score");
-const music = document.getElementById("bgMusic");
-const celebrate = document.getElementById("celebrationSound");
-const congrats = document.getElementById("congratsSound");
-
-let score = 0;
-let noClicks = 0;
-let musicStarted = false;
+const noBtn=document.getElementById("no");
+const yesBtn=document.getElementById("yes");
+const scoreEl=document.getElementById("score");
+const celebrate=document.getElementById("celebrationSound");
+const congrats=document.getElementById("congratsSound");
+let score=0,noClicks=0;
 const messages=["Are you sure? 🥺","Really sure?? 😳","But I love you 😢","Pleaseee? 💔","My heart is shaking 😭","You’re breaking me 💕","Say yes already 😈"];
 const catGifs=[
-  "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
-  "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
-  "https://media.giphy.com/media/13borq7Zo2kulO/giphy.gif"
+"https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
+"https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
+"https://media.giphy.com/media/13borq7Zo2kulO/giphy.gif"
+];
+const favorites=[
+  {icon:"🍲",name:"Sinigang"},
+  {icon:"🍵",name:"Matcha"},
+  {icon:"🍫",name:"Magnolia Chocolait"},
+  {icon:"🌻",name:"Sunflower"},
+  {icon:"🍗",name:"Fried Chicken"},
+  {icon:"💐",name:"Perfume"},
+  {icon:"👟",name:"Shoes"}
 ];
 
 // ===== CREATE FLOATING OBJECTS =====
-function createHeart(){const heart=document.createElement("div"); heart.className="heart"; heart.innerText="💖"; heart.style.left=Math.random()*100+"vw"; heart.style.animationDuration=(4+Math.random()*3)+"s"; document.body.appendChild(heart); heart.addEventListener("click",()=>{score++; scoreEl.innerText=score; createParticles(parseInt(heart.style.left),window.innerHeight-50); createCat(); heart.remove();}); setTimeout(()=>heart.remove(),7000);}
-function createPetal(){const petal=document.createElement("div"); petal.className="petal"; petal.innerText="🌹"; petal.style.left=Math.random()*100+"vw"; petal.style.animationDuration=(5+Math.random()*4)+"s"; document.body.appendChild(petal); setTimeout(()=>petal.remove(),9000);}
-function createCat(){const cat=document.createElement("img"); cat.src=catGifs[Math.floor(Math.random()*catGifs.length)]; cat.className="cat"; cat.style.left=Math.random()*100+"vw"; cat.style.top="100vh"; cat.style.transition="all 8s linear"; document.body.appendChild(cat); setTimeout(()=>{cat.remove()},12000);}
-function createParticles(x,y){for(let i=0;i<12;i++){const p=document.createElement("div");p.className="particle";p.style.left=x+"px";p.style.top=y+"px";p.style.setProperty('--randX',Math.random());p.style.setProperty('--randY',Math.random());document.body.appendChild(p);setTimeout(()=>p.remove(),1200);}}
-function createFirework(){for(let i=0;i<15;i++){const f=document.createElement("div");f.className="firework";f.innerText="💖";f.style.left=Math.random()*100+"vw";f.style.top=Math.random()*60+"vh";f.style.fontSize=(16+Math.random()*24)+"px";document.body.appendChild(f);setTimeout(()=>f.remove(),1500);}}
+function createHeart(){const h=document.createElement("div"); h.className="heart"; h.innerText="💖"; h.style.left=Math.random()*100+"vw"; h.style.animationDuration=(4+Math.random()*3)+"s"; document.body.appendChild(h);
+h.addEventListener("click",()=>{score++; scoreEl.innerText=score; createParticles(parseInt(h.style.left),window.innerHeight-50); createCat(); h.remove();}); setTimeout(()=>h.remove(),7000);}
+function createPetal(){const p=document.createElement("div"); p.className="petal"; p.innerText="🌹"; p.style.left=Math.random()*100+"vw"; p.style.animationDuration=(5+Math.random()*4)+"s"; document.body.appendChild(p); setTimeout(()=>p.remove(),9000);}
+function createCat(){const c=document.createElement("img"); c.src=catGifs[Math.floor(Math.random()*catGifs.length)]; c.className="cat"; c.style.left=Math.random()*100+"vw"; c.style.top="100vh"; c.style.transition="all 8s linear"; document.body.appendChild(c); setTimeout(()=>c.remove(),12000);}
+function createFavorite(){const f=document.createElement("div"); f.className="favorite"; const fav=favorites[Math.floor(Math.random()*favorites.length)]; f.innerText=fav.icon; f.style.left=Math.random()*100+"vw"; document.body.appendChild(f);
+f.addEventListener("click",()=>{score+=2; scoreEl.innerText=score; createParticles(parseInt(f.style.left),window.innerHeight-50); f.remove();}); setTimeout(()=>f.remove(),10000);}
+function createParticles(x,y){for(let i=0;i<12;i++){const p=document.createElement("div"); p.className="firework"; p.innerText="💖"; p.style.left=x+"px"; p.style.top=y+"px"; document.body.appendChild(p); setTimeout(()=>p.remove(),1200);}}
 
 // intervals
 setInterval(createHeart,1500);
 setInterval(createPetal,2000);
 setInterval(createCat,3000);
+setInterval(createFavorite,4000);
 
 // ===== NO BUTTON MINI-GAME =====
 noBtn.addEventListener("mousemove",()=>{
@@ -141,20 +108,16 @@ noBtn.addEventListener("mousemove",()=>{
   noBtn.style.left=x+"px";
   noBtn.style.top=y+"px";
   noBtn.style.transform=`scale(${1+noClicks*0.1})`;
-  if(!musicStarted){ music.play(); musicStarted=true; }
 });
 
 // ===== YES BUTTON =====
 yesBtn.onclick=()=>{
-  if(!musicStarted){ music.play(); musicStarted=true; }
-  celebrate.play(); congrats.play();
-  createFirework();
+  celebrate.play(); congrats.play(); createParticles(window.innerWidth/2,window.innerHeight/2);
   document.body.innerHTML=`<div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;background: radial-gradient(circle at bottom, #2c003e, #1a001f);color:#ffb6d2;font-family:'Great Vibes', cursive;padding:20px;">
   <h1 style="font-size:36px;text-shadow:0 0 25px #ff5d9e,0 0 50px #ff4d6d;">
   💖 Congratulations!! 💖<br>I love you endlessly,<br>Hershey Nicole 💕<br><br>Your Score: <span id="scoreEnd">${score}</span>
   </h1></div>`;
-  // continuous fireworks and cats
-  setInterval(()=>{createFirework(); createCat();},1000);
+  setInterval(()=>{createParticles(Math.random()*window.innerWidth, Math.random()*window.innerHeight); createCat(); createFavorite();},1000);
 };
 </script>
 </body>
