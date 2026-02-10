@@ -3,54 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hershey Nicole's Valentine Adventure 💖</title>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<title>Hershey Nicole's Pixel Valentine 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
+/* ===== BODY ===== */
 body {
-  margin:0; padding:0; overflow:hidden;
-  font-family:'Poppins', sans-serif;
-  background: radial-gradient(circle at bottom, #1a1a1a, #2c003e);
-  color:white; display:flex; justify-content:center; align-items:center; height:100vh;
+  margin:0; padding:0; background:#fcefff; display:flex; justify-content:center; align-items:center; height:100vh;
+  font-family:'Press Start 2P', monospace; overflow:hidden;
 }
 
-/* CARD UI */
-.card { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);
-  background: rgba(20,0,40,0.9); border-radius:25px; padding:30px;
-  text-align:center; box-shadow:0 15px 40px rgba(255,0,128,0.4); z-index:2; width:90%; max-width:380px; }
-h1{ font-family:'Great Vibes', cursive; font-size:32px; color:#ff5d9e;
-  text-shadow:0 0 20px #ff5d9e,0 0 40px #ff4d6d; margin-bottom:10px; }
-p{ font-size:18px; margin:6px 0; color:#ffd6f2; }
-em{ font-style:normal; color:#ffb6d2; }
-button{ padding:14px 28px; margin:12px; border:none; border-radius:40px;
-  font-size:16px; cursor:pointer; font-weight:600; transition:transform 0.2s ease, box-shadow 0.3s ease;}
-#yes{background:#ff4d6d; color:white; box-shadow:0 0 20px #ff4d6d,0 0 40px #ff5d9e;}
-#yes:hover{transform:scale(1.05); box-shadow:0 0 35px #ff5d9e,0 0 60px #ff4d6d;}
-#no{background:#555;color:white;position:absolute; box-shadow:0 0 15px #ff5d9e; cursor:pointer;}
+/* ===== GAMEBOY SCREEN ===== */
+.screen {
+  width:360px; max-width:90vw; height:500px; background:#d7ffe0; border:8px solid #b8ffd4;
+  border-radius:12px; position:relative; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
 
-/* FLOATING OBJECTS */
-.heart,.petal,.cat,.firework,.favorite{ position:absolute; pointer-events:none; user-select:none; }
-.heart{ font-size:22px; text-shadow:0 0 10px #ff5d9e; animation:floatUp 6s linear infinite; }
-@keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:0.8;}100%{transform:translateY(-110vh) scale(1.5);opacity:0;}}
-.petal{ font-size:20px; animation:fall 6s linear infinite; opacity:0.8;}
-@keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:0.8;}100%{transform:translateY(110vh) rotate(360deg);opacity:0;}}
-.cat{width:60px;height:60px;}
-.firework{font-size:24px; animation:firework 1.5s forwards;}
-@keyframes firework{0%{transform:scale(0) rotate(0deg);opacity:1;}100%{transform:scale(2) rotate(360deg);opacity:0;}}
-.favorite{font-size:28px; animation:floatUp 8s linear infinite;}
+/* ===== CARD UI ===== */
+.card { position:absolute; width:100%; text-align:center; top:10px; }
+.card h1{ font-size:16px; color:#ff77b6; margin-bottom:5px; }
+.card p{ font-size:10px; color:#555; margin:2px 0; }
+button{ font-family:'Press Start 2P', monospace; font-size:10px; padding:6px 12px; margin:4px; border-radius:6px; border:none; cursor:pointer; }
+#yes{background:#ff77b6; color:white;}
+#no{background:#777; color:white; position:absolute; top:70px; left:30px;}
 
-/* RESPONSIVE */
-@media (max-width:500px){ h1{font-size:28px;} p{font-size:16px;} button{padding:12px 22px;font-size:15px;} }
+/* ===== PIXEL OBJECTS ===== */
+.pixel-heart,.pixel-fav,.pixel-cat,.pixel-fire{
+  position:absolute; font-size:14px; user-select:none; pointer-events:none;
+}
+
+/* ===== SCORE ===== */
+#score-display{position:absolute; top:5px; left:5px; color:#222; font-size:12px;}
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>Hershey Nicole 💖</h1>
-  <p>Will you be my Valentine?</p>
-  <p><em>I love you endlessly.</em></p>
-  <button id="yes">Yes 💕</button>
-  <button id="no">No 😢</button>
-  <p>Score: <span id="score">0</span></p>
-  <!-- Embedded YouTube Player Auto-Play -->
+<div class="screen">
+  <div class="card">
+    <h1>Hershey Nicole 💖</h1>
+    <p>Will you be my Valentine?</p>
+    <p><em>I love you endlessly.</em></p>
+    <button id="yes">Yes 💕</button>
+    <button id="no">No 😢</button>
+  </div>
+  <div id="score-display">Score: 0</div>
+  <!-- YouTube Embed Auto-Play -->
   <iframe id="valentineSong" width="0" height="0"
     src="https://www.youtube.com/embed/kGDRoPlSbwA?autoplay=1&mute=0&loop=1&playlist=kGDRoPlSbwA"
     title="Laufey Valentine" frameborder="0"
@@ -58,22 +53,21 @@ button{ padding:14px 28px; margin:12px; border:none; border-radius:40px;
   </iframe>
 </div>
 
-<!-- Audio effects -->
 <audio id="celebrationSound"><source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg"></audio>
 <audio id="congratsSound"><source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg"></audio>
 
 <script>
-const noBtn=document.getElementById("no");
 const yesBtn=document.getElementById("yes");
-const scoreEl=document.getElementById("score");
+const noBtn=document.getElementById("no");
+const scoreDisplay=document.getElementById("score-display");
 const celebrate=document.getElementById("celebrationSound");
 const congrats=document.getElementById("congratsSound");
-let score=0,noClicks=0;
-const messages=["Are you sure? 🥺","Really sure?? 😳","But I love you 😢","Pleaseee? 💔","My heart is shaking 😭","You’re breaking me 💕","Say yes already 😈"];
+
+let score=0, noClicks=0;
+
 const catGifs=[
-"https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
-"https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
-"https://media.giphy.com/media/13borq7Zo2kulO/giphy.gif"
+  "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
+  "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif"
 ];
 const favorites=[
   {icon:"🍲",name:"Sinigang"},
@@ -85,26 +79,47 @@ const favorites=[
   {icon:"👟",name:"Shoes"}
 ];
 
-// ===== CREATE FLOATING OBJECTS =====
-function createHeart(){const h=document.createElement("div"); h.className="heart"; h.innerText="💖"; h.style.left=Math.random()*100+"vw"; h.style.animationDuration=(4+Math.random()*3)+"s"; document.body.appendChild(h);
-h.addEventListener("click",()=>{score++; scoreEl.innerText=score; createParticles(parseInt(h.style.left),window.innerHeight-50); createCat(); h.remove();}); setTimeout(()=>h.remove(),7000);}
-function createPetal(){const p=document.createElement("div"); p.className="petal"; p.innerText="🌹"; p.style.left=Math.random()*100+"vw"; p.style.animationDuration=(5+Math.random()*4)+"s"; document.body.appendChild(p); setTimeout(()=>p.remove(),9000);}
-function createCat(){const c=document.createElement("img"); c.src=catGifs[Math.floor(Math.random()*catGifs.length)]; c.className="cat"; c.style.left=Math.random()*100+"vw"; c.style.top="100vh"; c.style.transition="all 8s linear"; document.body.appendChild(c); setTimeout(()=>c.remove(),12000);}
-function createFavorite(){const f=document.createElement("div"); f.className="favorite"; const fav=favorites[Math.floor(Math.random()*favorites.length)]; f.innerText=fav.icon; f.style.left=Math.random()*100+"vw"; document.body.appendChild(f);
-f.addEventListener("click",()=>{score+=2; scoreEl.innerText=score; createParticles(parseInt(f.style.left),window.innerHeight-50); f.remove();}); setTimeout(()=>f.remove(),10000);}
-function createParticles(x,y){for(let i=0;i<12;i++){const p=document.createElement("div"); p.className="firework"; p.innerText="💖"; p.style.left=x+"px"; p.style.top=y+"px"; document.body.appendChild(p); setTimeout(()=>p.remove(),1200);}}
+// ===== PIXEL-STEP FUNCTIONS =====
+function createHeart(){
+  const h=document.createElement("div"); h.className="pixel-heart"; h.innerText="💖";
+  h.style.top=Math.floor(Math.random()*40+50)+"px";
+  h.style.left=Math.floor(Math.random()*320)+"px";
+  document.querySelector(".screen").appendChild(h);
+  h.addEventListener("click",()=>{score++; scoreDisplay.innerText="Score: "+score; createCat(); h.remove();});
+  setTimeout(()=>h.remove(),7000);
+}
 
-// intervals
+function createFavorite(){
+  const f=document.createElement("div"); f.className="pixel-fav";
+  const fav=favorites[Math.floor(Math.random()*favorites.length)];
+  f.innerText=fav.icon;
+  f.style.top=Math.floor(Math.random()*40+50)+"px";
+  f.style.left=Math.floor(Math.random()*320)+"px";
+  document.querySelector(".screen").appendChild(f);
+  f.addEventListener("click",()=>{score+=2; scoreDisplay.innerText="Score: "+score; f.remove();});
+  setTimeout(()=>f.remove(),10000);
+}
+
+function createCat(){
+  const c=document.createElement("img"); c.className="pixel-cat";
+  c.src=catGifs[Math.floor(Math.random()*catGifs.length)];
+  c.style.top=Math.floor(Math.random()*60+100)+"px";
+  c.style.left=Math.floor(Math.random()*320)+"px";
+  c.style.width="20px"; c.style.height="20px";
+  document.querySelector(".screen").appendChild(c);
+  setTimeout(()=>c.remove(),5000);
+}
+
+// intervals for pixel-step objects
 setInterval(createHeart,1500);
-setInterval(createPetal,2000);
-setInterval(createCat,3000);
-setInterval(createFavorite,4000);
+setInterval(createFavorite,3000);
+setInterval(createCat,4000);
 
-// ===== NO BUTTON MINI-GAME =====
+// ===== NO BUTTON =====
 noBtn.addEventListener("mousemove",()=>{
   noClicks++;
-  const x=Math.random()*(window.innerWidth-100);
-  const y=Math.random()*(window.innerHeight-100);
+  const x=Math.floor(Math.random()*260);
+  const y=Math.floor(Math.random()*400);
   noBtn.style.left=x+"px";
   noBtn.style.top=y+"px";
   noBtn.style.transform=`scale(${1+noClicks*0.1})`;
@@ -112,12 +127,10 @@ noBtn.addEventListener("mousemove",()=>{
 
 // ===== YES BUTTON =====
 yesBtn.onclick=()=>{
-  celebrate.play(); congrats.play(); createParticles(window.innerWidth/2,window.innerHeight/2);
-  document.body.innerHTML=`<div style="display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;background: radial-gradient(circle at bottom, #2c003e, #1a001f);color:#ffb6d2;font-family:'Great Vibes', cursive;padding:20px;">
-  <h1 style="font-size:36px;text-shadow:0 0 25px #ff5d9e,0 0 50px #ff4d6d;">
-  💖 Congratulations!! 💖<br>I love you endlessly,<br>Hershey Nicole 💕<br><br>Your Score: <span id="scoreEnd">${score}</span>
-  </h1></div>`;
-  setInterval(()=>{createParticles(Math.random()*window.innerWidth, Math.random()*window.innerHeight); createCat(); createFavorite();},1000);
+  celebrate.play(); congrats.play();
+  const screen=document.querySelector(".screen");
+  screen.innerHTML=`<h1 style="color:#ff77b6; text-align:center; margin-top:50px;">💖 Congratulations!! 💖<br>I love you endlessly, Hershey Nicole 💕<br>Your Score: ${score}</h1>`;
+  setInterval(()=>{createCat(); createFavorite();},1000);
 };
 </script>
 </body>
