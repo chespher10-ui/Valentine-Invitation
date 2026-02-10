@@ -3,135 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hershey Nicole's Pixel Valentine 💖</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<title>Valentine's Pixel Game</title>
 <style>
-/* ===== BODY ===== */
-body {
-  margin:0; padding:0; background:#fcefff; display:flex; justify-content:center; align-items:center; height:100vh;
-  font-family:'Press Start 2P', monospace; overflow:hidden;
-}
+  /* General styling */
+  body {
+    font-family: 'Press Start 2P', cursive, monospace;
+    background-color: #b0f2b6;
+    color: #0a2f0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
 
-/* ===== GAMEBOY SCREEN ===== */
-.screen {
-  width:360px; max-width:90vw; height:500px; background:#d7ffe0; border:8px solid #b8ffd4;
-  border-radius:12px; position:relative; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3);
-}
+  /* Game container */
+  #game {
+    width: 320px;
+    padding: 20px;
+    border: 8px solid #0a2f0a;
+    background-color: #c6f2c6;
+    box-shadow: 4px 4px 0 #0a2f0a;
+    text-align: center;
+  }
 
-/* ===== CARD UI ===== */
-.card { position:absolute; width:100%; text-align:center; top:10px; }
-.card h1{ font-size:16px; color:#ff77b6; margin-bottom:5px; }
-.card p{ font-size:10px; color:#555; margin:2px 0; }
-button{ font-family:'Press Start 2P', monospace; font-size:10px; padding:6px 12px; margin:4px; border-radius:6px; border:none; cursor:pointer; }
-#yes{background:#ff77b6; color:white;}
-#no{background:#777; color:white; position:absolute; top:70px; left:30px;}
+  /* Buttons */
+  button {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+    padding: 10px 20px;
+    margin: 5px;
+    border: 3px solid #0a2f0a;
+    background-color: #a5e3a5;
+    cursor: pointer;
+    transition: 0.2s;
+  }
 
-/* ===== PIXEL OBJECTS ===== */
-.pixel-heart,.pixel-fav,.pixel-cat,.pixel-fire{
-  position:absolute; font-size:14px; user-select:none; pointer-events:none;
-}
+  button:hover {
+    background-color: #8fdc8f;
+  }
 
-/* ===== SCORE ===== */
-#score-display{position:absolute; top:5px; left:5px; color:#222; font-size:12px;}
+  .emoji-button {
+    font-size: 24px;
+  }
+
+  /* Score display */
+  #score {
+    margin: 10px 0;
+    font-size: 12px;
+  }
+
+  /* Fade animation */
+  .fade {
+    animation: fade 0.5s;
+  }
+
+  @keyframes fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="screen">
-  <div class="card">
-    <h1>Hershey Nicole 💖</h1>
-    <p>Will you be my Valentine?</p>
-    <p><em>I love you endlessly.</em></p>
-    <button id="yes">Yes 💕</button>
-    <button id="no">No 😢</button>
-  </div>
-  <div id="score-display">Score: 0</div>
-  <!-- YouTube Embed Auto-Play -->
-  <iframe id="valentineSong" width="0" height="0"
-    src="https://www.youtube.com/embed/kGDRoPlSbwA?autoplay=1&mute=0&loop=1&playlist=kGDRoPlSbwA"
-    title="Laufey Valentine" frameborder="0"
-    allow="autoplay; encrypted-media" allowfullscreen>
-  </iframe>
+
+<div id="game">
+  <!-- Game content will appear here -->
 </div>
 
-<audio id="celebrationSound"><source src="https://www.soundjay.com/button/sounds/button-3.mp3" type="audio/mpeg"></audio>
-<audio id="congratsSound"><source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg"></audio>
-
 <script>
-const yesBtn=document.getElementById("yes");
-const noBtn=document.getElementById("no");
-const scoreDisplay=document.getElementById("score-display");
-const celebrate=document.getElementById("celebrationSound");
-const congrats=document.getElementById("congratsSound");
+const game = document.getElementById('game');
 
-let score=0, noClicks=0;
+let score = 0;
+let currentQuestion = 0;
 
-const catGifs=[
-  "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
-  "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif"
+// Questions for the game
+const questions = [
+  {
+    text: "Which chocolate do you like? 🍫 or 🍬",
+    options: ["🍫", "🍬"],
+    answer: "🍫", // set to her actual favorite
+    points: 20
+  },
+  {
+    text: "Favorite drink? ☕ or 🍵",
+    options: ["☕", "🍵"],
+    answer: "🍵",
+    points: 20
+  },
+  {
+    text: "Favorite color? ❤️ or 💜",
+    options: ["❤️", "💜"],
+    answer: "💜",
+    points: 20
+  },
+  {
+    text: "Favorite snack? 🍎 or 🍪",
+    options: ["🍎", "🍪"],
+    answer: "🍪",
+    points: 20
+  },
+  {
+    text: "Favorite animal? 🐶 or 🐱",
+    options: ["🐶", "🐱"],
+    answer: "🐱",
+    points: 20
+  }
 ];
-const favorites=[
-  {icon:"🍲",name:"Sinigang"},
-  {icon:"🍵",name:"Matcha"},
-  {icon:"🍫",name:"Magnolia Chocolait"},
-  {icon:"🌻",name:"Sunflower"},
-  {icon:"🍗",name:"Fried Chicken"},
-  {icon:"💐",name:"Perfume"},
-  {icon:"👟",name:"Shoes"}
-];
 
-// ===== PIXEL-STEP FUNCTIONS =====
-function createHeart(){
-  const h=document.createElement("div"); h.className="pixel-heart"; h.innerText="💖";
-  h.style.top=Math.floor(Math.random()*40+50)+"px";
-  h.style.left=Math.floor(Math.random()*320)+"px";
-  document.querySelector(".screen").appendChild(h);
-  h.addEventListener("click",()=>{score++; scoreDisplay.innerText="Score: "+score; createCat(); h.remove();});
-  setTimeout(()=>h.remove(),7000);
+// Show instructions
+function showInstructions() {
+  game.innerHTML = `
+    <div class="fade">
+      <h2>Welcome to your Valentine’s Adventure! 🎮</h2>
+      <p>Answer fun questions about your favorites to earn points. Reach 100 points to unlock a special question!</p>
+      <button onclick="nextQuestion()">Start Game</button>
+    </div>
+  `;
 }
 
-function createFavorite(){
-  const f=document.createElement("div"); f.className="pixel-fav";
-  const fav=favorites[Math.floor(Math.random()*favorites.length)];
-  f.innerText=fav.icon;
-  f.style.top=Math.floor(Math.random()*40+50)+"px";
-  f.style.left=Math.floor(Math.random()*320)+"px";
-  document.querySelector(".screen").appendChild(f);
-  f.addEventListener("click",()=>{score+=2; scoreDisplay.innerText="Score: "+score; f.remove();});
-  setTimeout(()=>f.remove(),10000);
+// Show a question
+function showQuestion() {
+  const q = questions[currentQuestion];
+  let buttonsHTML = q.options.map(option => `<button class="emoji-button" onclick="choose('${option}')">${option}</button>`).join("");
+  game.innerHTML = `
+    <div class="fade">
+      <p>${q.text}</p>
+      ${buttonsHTML}
+      <div id="score">Points: ${score}</div>
+    </div>
+  `;
 }
 
-function createCat(){
-  const c=document.createElement("img"); c.className="pixel-cat";
-  c.src=catGifs[Math.floor(Math.random()*catGifs.length)];
-  c.style.top=Math.floor(Math.random()*60+100)+"px";
-  c.style.left=Math.floor(Math.random()*320)+"px";
-  c.style.width="20px"; c.style.height="20px";
-  document.querySelector(".screen").appendChild(c);
-  setTimeout(()=>c.remove(),5000);
+// Handle choice
+function choose(option) {
+  const q = questions[currentQuestion];
+  if(option === q.answer){
+    score += q.points;
+  }
+  currentQuestion++;
+  if(currentQuestion < questions.length){
+    showQuestion();
+  } else {
+    showFinal();
+  }
 }
 
-// intervals for pixel-step objects
-setInterval(createHeart,1500);
-setInterval(createFavorite,3000);
-setInterval(createCat,4000);
+// Show final Valentine question
+function showFinal() {
+  game.innerHTML = `
+    <div class="fade">
+      <h2>Will you be my Valentine? ❤️</h2>
+      <button onclick="finalAnswer('yes')">Yes</button>
+      <button onclick="finalAnswer('no')">No</button>
+      <div id="score">Total Points: ${score}</div>
+    </div>
+  `;
+}
 
-// ===== NO BUTTON =====
-noBtn.addEventListener("mousemove",()=>{
-  noClicks++;
-  const x=Math.floor(Math.random()*260);
-  const y=Math.floor(Math.random()*400);
-  noBtn.style.left=x+"px";
-  noBtn.style.top=y+"px";
-  noBtn.style.transform=`scale(${1+noClicks*0.1})`;
-});
+// Handle final answer
+function finalAnswer(answer) {
+  if(answer === 'yes'){
+    game.innerHTML = `
+      <div class="fade">
+        <h2>Yay! You just made my day! 💖</h2>
+      </div>
+    `;
+  } else {
+    game.innerHTML = `
+      <div class="fade">
+        <h2>It’s okay! You’re still awesome! 😊</h2>
+      </div>
+    `;
+  }
+}
 
-// ===== YES BUTTON =====
-yesBtn.onclick=()=>{
-  celebrate.play(); congrats.play();
-  const screen=document.querySelector(".screen");
-  screen.innerHTML=`<h1 style="color:#ff77b6; text-align:center; margin-top:50px;">💖 Congratulations!! 💖<br>I love you endlessly, Hershey Nicole 💕<br>Your Score: ${score}</h1>`;
-  setInterval(()=>{createCat(); createFavorite();},1000);
-};
+// Start the game
+showInstructions();
 </script>
+
 </body>
 </html>
