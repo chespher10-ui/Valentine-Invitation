@@ -156,6 +156,24 @@ function fireworks(){
   position:relative;
   transition:transform 0.3s ease;
 }
+
+    .correct-grow{
+  transform: scale(1.4);
+  transition: transform 0.3s ease;
+  box-shadow: 0 0 12px #8aff8a;
+}
+
+.wrong-shake{
+  animation: shake 0.3s;
+}
+
+@keyframes shake{
+  0%{ transform: translateX(0); }
+  25%{ transform: translateX(-5px); }
+  50%{ transform: translateX(5px); }
+  75%{ transform: translateX(-5px); }
+  100%{ transform: translateX(0); }
+}
 </style>
 </head>
 
@@ -239,12 +257,31 @@ function loadQuestion(){
     const b=document.createElement("button");
     b.className="btn-emoji";
     b.textContent=opt;
-    b.onclick=()=>{
-      if(opt===q.a) score+=20;
-      updateScore();
-      index++;
-      setTimeout(loadQuestion,300);
-    };
+   b.onclick=()=>{
+
+  const buttons = document.querySelectorAll(".btn-emoji");
+
+  if(opt === q.a){
+    score += 20;
+    b.classList.add("correct-grow");
+  } else {
+    b.classList.add("wrong-shake");
+
+    // Make the correct answer grow
+    buttons.forEach(btn=>{
+      if(btn.textContent === q.a){
+        btn.classList.add("correct-grow");
+      }
+    });
+  }
+
+  updateScore();
+
+  setTimeout(()=>{
+    index++;
+    loadQuestion();
+  }, 800); // delay so animation shows
+};
     c.appendChild(b);
   });
 }
@@ -301,6 +338,7 @@ function fireworks(){
 
 </body>
 </html>
+
 
 
 
