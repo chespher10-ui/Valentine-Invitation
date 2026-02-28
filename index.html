@@ -199,7 +199,7 @@ function fireworks(){
     </div>
 
     <div id="final" class="hidden">
-      <h1>Will you be my Valentine? ❤️</h1>
+      <h1>Will you be my forever Valentine? ❤️</h1>
       <button id="yes">Yes 💕</button>
       <button id="no">No 😊</button>
     </div>
@@ -218,11 +218,11 @@ function fireworks(){
 
 <script>
 const questions = [
-  {q:"Who loves you the most?", o:["Yuri","Regine V."], a:"Yuri"},
-  {q:"Which drink do you prefer?", o:["🍵","🥤"], a:"🍵"},
-  {q:"Favorite flower?", o:["🌻","🌹"], a:"🌻"},
-  {q:"Favorite food?", o:["🍗","🍕"], a:"🍗"},
-  {q:"Pick one!", o:["👟","💐"], a:"💐"}
+  {q:"Who loves you the most?", o:["YT","RV"], a:"YT"},
+  {q:"Which drink do you prefer?", o:["🍵","🍺"], a:"🍵"},
+  {q:"Which flower do you like?", o:["🌻","🌹"], a:"🌻"},
+  {q:"Food you love", o:["🥜","🌭"], a:"🌭"},
+  {q:"What is the sign language for ILY?", o:["👊","🤟"], a:"🤟"}
 ];
 
 let score=0, index=0;
@@ -319,7 +319,7 @@ document.getElementById("no").onmouseover = ()=>{
 document.getElementById("yes").onclick=()=>{
   document.getElementById("final").classList.add("hidden");
   document.getElementById("result").classList.remove("hidden");
-  document.getElementById("message").textContent="Yay! You just made my day! 💖";
+  document.getElementById("message").textContent="Yay! You just made my day!💖 I'll see you later, 5pm 🤟";
   fireworks();
 };
 
@@ -338,6 +338,7 @@ function fireworks(){
 
 </body>
 </html>
+
 
 
 
